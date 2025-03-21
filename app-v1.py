@@ -16,25 +16,32 @@ while True:
             valor = float(input("Digite o valor do depósito: R$"))
             if valor > 0:
                 saldo += valor
+                extrato += f"Depósito: R${valor:.2f}\n"
             else:
                 print("Digite um valor válido.")
 
         case "s":
             valor = float(input("Digite o valor do saque: R$"))
-            if saques_executados == LIMITE_SAQUES:
+            if saques_executados >= LIMITE_SAQUES:
                 print("Limite de saques diários atingido!")
             elif valor > saldo:
                 print("Saldo insuficiente!")
-                print(f"Saldo atual: R${saldo:.2f}")
             elif valor <= limite and valor > 0:
                 saldo -= valor
                 saques_executados += 1
-                print("Saque realizado!")
+                extrato += f"Saque: R${valor}\n"
             else:
                 print("Digite um valor válido")
 
         case "e":
-            print(f"Extrato: R${saldo:.2f}")
+            print("Extrato".center(50, "="))
+            print(
+                "Nenhuma movimentação realizada recentemente."
+                if not extrato
+                else extrato
+            )
+            print(f"Saldo: R${saldo:.2f}")
+            print("=" * 50)
 
         case "q":
             break
