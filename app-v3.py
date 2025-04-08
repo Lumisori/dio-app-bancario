@@ -49,16 +49,53 @@ def exibir_extrato(saldo, /, *, extrato):
     print("=" * 50)
 
 
+def filtrar_usuario(cpf, usuarios):
+    usuarios_filtrados = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
+    return usuarios_filtrados[0] if usuarios_filtrados else None
+
+
 def criar_usuario(usuarios):
-    print
+    cpf = input("Informe o CPF (somente números)")
+    usuario = filtrar_usuario(cpf, usuarios)
+
+    if usuario:
+        print("\n Este CPF já foi cadastrado no sistema!")
+        return
+    nome = input("Informe seu nome completo: ")
+    data_nasc = input("Informe sua data de nascimento (dd-mm-aaaa): ")
+    endereco = input(
+        "Informe seu endereço (logradouro, numero - bairro - cidade/estado): "
+    )
+    usuarios.append(
+        {"nome": nome, "data_nascimento": data_nasc, "cpf": cpf, "endereço": endereco}
+    )
+    print("@@@@ Usuário criado com sucesso! @@@@")
 
 
-def criar_conta_corrente():
-    print()
+def criar_conta_corrente(agencia, numero_conta, usuarios):
+    cpf = input("Informe o CPF (somente números)")
+    usuario = filtrar_usuario(cpf, usuarios)
+    if usuario:
+        print("@@@@ Conta Corrente criada com sucesso ! @@@@")
+        return {"agencia": agencia, "numero_conta": numero_conta, "usuario": usuario}
+    print(
+        "\n @@@@ Usuário não encontrado no sistema, cadastre um novo CPF ao sistema! @@@@"
+    )
 
 
 def listar_contas(contas):
-    print
+    if contas:
+        for conta in contas:
+            linha = f"""
+                Agência:\t {conta['agencia']}
+                Conta Corrente:\t {conta['numero_conta']}
+                Titular:\t {conta['usuario']['nome']}
+            """
+            print("=" * 50)
+            print(textwrap.dedent(linha))
+    else:
+        print("@@@@ Nenhuma conta corrente cadastrada no sistema! @@@@")
+        return
 
 
 def main():
@@ -91,6 +128,15 @@ def main():
                 )
             case "e":
                 exibir_extrato(saldo, extrato=extrato)
+            case "nu":
+                criar_usuario(usuarios)
+            case "nc":
+                numero_conta = len(contas) + 1
+                conta = criar_conta_corrente(AGENCIA, numero_conta, usuarios)
+                if conta:
+                    contas.append(conta)
+            case "lc":
+                listar_contas(contas)
             case "q":
                 print("Obrigado por usar nosso sistema. Até logo!")
                 break
